@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#1f2a30" />
+    <title>Out of Square</title>
+    <link href="css/app.css" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Home: sketches by client -->
+    <section id="home" class="screen">
+        <header class="topbar">
+            <h1 class="brand">Out of Square</h1>
+            <span class="topbar-spacer"></span>
+            <button type="button" class="btn" id="importJson">Import</button>
+            <button type="button" class="btn primary" id="newSketch">+ New sketch</button>
+        </header>
+        <div id="sketchList" class="sketch-list"></div>
+    </section>
+
+    <!-- Editor: 1. top view sketch, 2. measuring in 3D -->
+    <section id="editor" class="screen" hidden>
+        <header class="topbar">
+            <button type="button" class="btn icon" id="back" aria-label="Back to all sketches">‹</button>
+            <div class="title">
+                <div id="sketchTitle" class="title-main"></div>
+                <div id="sketchClient" class="title-sub"></div>
+            </div>
+            <span class="topbar-spacer"></span>
+            <nav class="segmented" aria-label="Step">
+                <button type="button" data-mode="sketch">1 · Top view</button>
+                <button type="button" data-mode="measure">2 · Measure</button>
+            </nav>
+            <span class="topbar-spacer"></span>
+            <button type="button" class="btn" id="undo">Undo</button>
+            <button type="button" class="btn" id="redo">Redo</button>
+            <div class="menu">
+                <button type="button" class="btn" id="exportBtn">Export ▾</button>
+                <div class="menu-list" id="exportMenu" hidden>
+                    <button type="button" data-export="dae">SketchUp (.dae)</button>
+                    <button type="button" data-export="json">Backup (.json)</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="workspace">
+            <!-- Step 1 -->
+            <div id="sketchPane" class="pane">
+                <svg id="sketchSvg" class="sketch-svg"></svg>
+                <div class="floating left">
+                    <button type="button" class="btn" id="clearSketch">Clear</button>
+                    <label class="field">Ceiling ≈
+                        <input id="defaultHeight" type="number" inputmode="numeric" step="10" min="1000" max="6000"> mm
+                    </label>
+                </div>
+                <div class="hint" id="sketchHint"></div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="measurePane" class="pane" hidden>
+                <div class="room-wrap">
+                    <div id="roomView" class="room-view"></div>
+                    <div id="roomLabels" class="room-labels"></div>
+                    <div class="floating left views" id="viewButtons"></div>
+                    <div class="hint" id="measureHint"></div>
+                    <div class="floating bottom" id="shortcutBar" hidden></div>
+                </div>
+                <aside class="side">
+                    <div class="side-head">
+                        <span>Measurements</span>
+                        <span id="measureCount" class="count"></span>
+                    </div>
+                    <div id="measureList" class="measure-list"></div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Number pad -->
+    <div id="keypad" class="keypad" hidden>
+        <div class="keypad-head">
+            <div id="keypadTitle" class="keypad-title"></div>
+            <div id="keypadDisplay" class="keypad-display"></div>
+        </div>
+        <div class="keypad-keys">
+            <button type="button" data-key="7">7</button>
+            <button type="button" data-key="8">8</button>
+            <button type="button" data-key="9">9</button>
+            <button type="button" data-key="4">4</button>
+            <button type="button" data-key="5">5</button>
+            <button type="button" data-key="6">6</button>
+            <button type="button" data-key="1">1</button>
+            <button type="button" data-key="2">2</button>
+            <button type="button" data-key="3">3</button>
+            <button type="button" data-key=".">.</button>
+            <button type="button" data-key="0">0</button>
+            <button type="button" data-key="back">⌫</button>
+        </div>
+        <div class="keypad-actions">
+            <button type="button" data-action="delete" class="danger">Delete</button>
+            <button type="button" data-action="later">Later</button>
+            <button type="button" data-action="cancel">Cancel</button>
+            <button type="button" data-action="save" class="primary">Save</button>
+        </div>
+    </div>
+
+    <!-- New sketch dialog -->
+    <dialog id="newDialog">
+        <form method="dialog" class="dialog-form">
+            <h2>New sketch</h2>
+            <label>Client <input name="client" list="clientNames" autocomplete="off" required></label>
+            <datalist id="clientNames"></datalist>
+            <label>Sketch <input name="name" placeholder="Kitchen" autocomplete="off" required></label>
+            <div class="dialog-actions">
+                <button type="button" class="btn" value="cancel" id="newCancel">Cancel</button>
+                <button class="btn primary" value="ok">Create</button>
+            </div>
+        </form>
+    </dialog>
+
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <div id="toast" class="toast" hidden></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
