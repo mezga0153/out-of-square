@@ -1,0 +1,9 @@
+{
+  // Worker "out-of-square", served at outofsquare.tinetov.net. Static files
+  // only: deploy.sh copies the committed app (index.html, css/, js/) into
+  // dist/, which is served as it is.
+  "name": "out-of-square",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./dist" },
+  "routes": [{ "pattern": "outofsquare.tinetov.net", "custom_domain": true }],
+}
